@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Календарь Мемов 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap');
+        
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f5f5f7;
+            transition: background 0.3s ease;
+        }
+
+        body.dark {
+            background: #000000;
+        }
+
+        /* Toggle Switch */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 64px;
+            height: 32px;
+            background: #e5e5e7;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            z-index: 100;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        body.dark .theme-toggle {
+            background: #2c2c2e;
+        }
+
+        .toggle-slider {
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        body.dark .toggle-slider {
+            transform: translateX(32px);
+            background: #1c1c1e;
+        }
+
+        /* Cards */
+        .month-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 24px;
+        }
+
+        body.dark .month-card {
+            background: #1c1c1e;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 8px;
+            z-index: 10;
+        }
+
+        .month-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 4px;
+        }
+
+        body.dark .month-title {
+            color: #f5f5f7;
+        }
+
+        .meme-description {
+            font-size: 13px;
+            color: #86868b;
+            max-width: 200px;
+            line-height: 1.4;
+        }
+
+        body.dark .meme-description {
+            color: #8e8e93;
+        }
+
+        /* Orbit Container */
+        .orbit-wrapper {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .orbit-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .orbit-container.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: rotate 25s linear infinite;
+        }
+
+        .orbit.paused {
+            animation-play-state: paused;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Center Button */
+        .center-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .center-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        body.dark .center-btn {
+            background: #2c2c2e;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .center-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .center-btn.active {
+            transform: rotate(45deg);
+            background: #ff3b30;
+        }
+
+        body.dark .center-btn.active {
+            background: #ff453a;
+        }
+
+        /* Satellite Nodes */
+        .meme-node {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: white;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.05);
+            top: 50%;
+            left: 50%;
+            margin-top: -20px;
+            margin-left: -20px;
+            transition: box-shadow 0.2s ease;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .meme-node img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        body.dark .meme-node {
+            background: #2c2c2e;
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+
+        .meme-node-inner {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+            overflow: hidden;
+        }
+
+        .meme-node:hover .meme-node-inner {
+            transform: scale(1.2);
+        }
+
+        .meme-node:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 100;
+        }
+
+        /* Modal - Светлая тема (по умолчанию) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 400px;
+            width: 85%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), background 0.3s ease;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        body.dark .modal-content {
+            background: #1c1c1e;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-image {
+            width: 280px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        /* Заголовок модалки */
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark .modal-title {
+            color: #f5f5f7;
+        }
+
+        /* Описание в модалке */
+        .modal-description {
+            color: #86868b;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark .modal-description {
+            color: #8e8e93;
+        }
+
+        /* Кнопка "Узнать подробнее" - Светлая тема */
+        .modal-button {
+            display: inline-block;
+            padding: 14px 28px;
+            background: #1d1d1f;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-button:hover {
+            transform: scale(1.05);
+            background: #000000;
+        }
+
+        /* Кнопка "Узнать подробнее" - Тёмная тема */
+        body.dark .modal-button {
+            background: #ffffff;
+            color: #1d1d1f;
+        }
+
+        body.dark .modal-button:hover {
+            background: #f5f5f7;
+        }
+
+        /* Кнопка закрытия */
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.1);
+            cursor: pointer;
+            font-size: 16px;
+            color: #1d1d1f;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(0,0,0,0.2);
+            transform: scale(1.1);
+        }
+
+        body.dark .close-btn {
+            background: rgba(255,255,255,0.2);
+            color: #f5f5f7;
+        }
+
+        body.dark .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px 40px;
+        }
+
+        @media (max-width: 640px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-image {
+                width: 240px;
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <div class="toggle-slider">
+            <span class="toggle-icon" id="toggleIcon">☀️</span>
+        </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="cards-grid" id="cardsGrid"></div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModalOnBackground(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <img src="" alt="Мем" class="modal-image" id="modalImage">
+            <h3 class="modal-title" id="modalTitle"></h3>
+            <p class="modal-description" id="modalDescription"></p>
+            <a href="#" class="modal-button" id="modalLink" target="_blank">Узнать подробнее</a>
+        </div>
+    </div>
+
+    <script>
+        let activeCardIndex = null;
+
+        const monthsData = [
+            {
+                month: "Январь",
+                folder: "january",
+                link: "https://t.me/sashaonline",
+                popular: { 
+                    file: "maduro.jpg", 
+                    name: "Захват Николоса Мадуро", 
+                    desc: "Каракас за 3 часа. Война США и Венесуэлы" 
+                },
+                memes: [
+                    { 
+                        file: "maduro.jpg",
+                        name: "Захваченный Николос Мадуро", 
+                        desc: "Каракас за 3 часа. Война США и Венесуэлы ",
+                        link: "https://t.me/sashaonline"
+                    },
+                    { 
+                        file: "pinguin.jpg",
+                        name: "Пингвин", 
+                        desc: "Пингвин Адели отбивается от стаи и уходит",
+                        link: "https://t.me/sashaonline"
+                    },
+                    { 
+                        file: "hr.jpg",
+                        name: "Жаркое соперничество", 
+                        desc: "I am coming to the cottage",
+                        link: "https://t.me/sashaonline"
+                    },
+                    { 
+                        file: "samonadutie.jpg",
+                        name: "Самонадутие", 
+                        desc: "Здравствуйте, можете посмотреть на моё самонадутие?",
+                        link: "https://t.me/sashaonline"
+                    },
+                ]
+            },
+            {
+                month: "Февраль",
+                folder: "february",
+                link: "https://example.com/february-memes",
+                popular: { 
+                    file: "epshtein.jpg", 
+                    name: "", 
+                    desc: "Ищи себя в файлах Эпштейна" 
+                },
+                memes: [
+                    { 
+                        file: "epshtein.jpg",
+                        name: "Файлы Эпштейна", 
+                        desc: "Гос.деп США обнародовал файлы Эпштейна",
+                        link: "https://t.me/sashaonline"
+                    },
+                    { 
+                        file: "DZ.jpg",
+                        name: "Злая начальница", 
+                        desc: "Дарья Зырковская самостоятельно зафорсила мем с собой",
+                        link: "https://t.me/sashaonline"
+                    },
+                    { 
+                        file: "punch.jpg",
+                        name: "Обезьянка Панч", 
+                        desc: "Его обязательно примут в стаю",
+                        link: "https://t.me/sashaonline"
+                    },
+                    { 
+                        file: "olympics.jpg",
+                        name: "Олимпиада 2026", 
+                        desc: "Нечестная игра в кёрлинг, признание в обмане на весь мир, жаркое соперничество в фигурном катание и многое другое...",
+                        link: "https://t.me/sashaonline"
+                    },
+                    { 
+                        file: "shaman.jpg",
+                        name: "Шаман на Байкале", 
+                        desc: "Шаман лизал Байкал",
+                        link: "https://t.me/sashaonline"
+                    }
+                ]
+            },
+            {
+                month: "Март",
+                folder: "lock",
+                link: "https://example.com/march-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: []
+
+            },
+            {
+                month: "Апрель",
+                folder: "lock",
+                link: "https://example.com/april-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Май",
+                folder: "lock",
+                link: "https://example.com/may-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Июнь",
+                folder: "lock",
+                link: "https://example.com/june-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Июль",
+                folder: "lock",
+                link: "https://example.com/july-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Август",
+                folder: "lock",
+                link: "https://example.com/august-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Сентябрь",
+                folder: "lock",
+                link: "https://example.com/september-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Октябрь",
+                folder: "lock",
+                link: "https://example.com/october-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Ноябрь",
+                folder: "lock",
+                link: "https://example.com/november-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            },
+            {
+                month: "Декабрь",
+                folder: "lock",
+                link: "https://example.com/december-memes",
+                popular: { 
+                    file: "lock.jpg", 
+                    name: "", 
+                    desc: "" 
+                },
+                memes: [
+                    
+                ]
+            }
+        ];
+
+        function generateCards() {
+            const grid = document.getElementById('cardsGrid');
+            
+            monthsData.forEach((data, index) => {
+                const card = document.createElement('div');
+                card.className = 'month-card';
+                
+                const orbitRadius = 75;
+                const nodes = data.memes;
+                const angleStep = 360 / nodes.length;
+                
+                const nodesHtml = nodes.map((meme, i) => {
+                    const angle = angleStep * i;
+                    const radian = (angle - 90) * (Math.PI / 180);
+                    const x = Math.cos(radian) * orbitRadius;
+                    const y = Math.sin(radian) * orbitRadius;
+                    
+                    const imagePath = `${data.folder}/${meme.file}`;
+                    
+                    return `
+                        <div class="meme-node" 
+                             style="transform: translate(${x}px, ${y}px);"
+                             onmouseenter="pauseOrbit(${index})" 
+                             onmouseleave="resumeOrbit(${index})"
+                             onclick="openModal('${meme.name}', '${meme.desc}', '${imagePath}', '${meme.link}')"
+                             title="${meme.name}">
+                            <div class="meme-node-inner">
+                                <img src="${imagePath}" alt="${meme.name}">
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                const popularImagePath = `${data.folder}/${data.popular.file}`;
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h2 class="month-title">${data.month}</h2>
+                        <p class="meme-description">${data.popular.desc}</p>
+                    </div>
+                    
+                    <div class="orbit-wrapper">
+                        <div class="orbit-container" id="orbit-${index}">
+                            <div class="orbit" id="orbit-inner-${index}">
+                                ${nodesHtml}
+                            </div>
+                        </div>
+                        
+                        <button class="center-btn" 
+                                onclick="toggleOrbit(${index})"
+                                id="centerBtn-${index}">
+                            <img src="${popularImagePath}" alt="${data.popular.name}">
+                        </button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleOrbit(index) {
+            if (activeCardIndex !== null && activeCardIndex !== index) {
+                const prevOrbit = document.getElementById(`orbit-${activeCardIndex}`);
+                const prevBtn = document.getElementById(`centerBtn-${activeCardIndex}`);
+                prevOrbit.classList.remove('active');
+                prevBtn.classList.remove('active');
+            }
+            
+            const orbit = document.getElementById(`orbit-${index}`);
+            const btn = document.getElementById(`centerBtn-${index}`);
+            
+            const isActive = orbit.classList.contains('active');
+            
+            if (isActive) {
+                orbit.classList.remove('active');
+                btn.classList.remove('active');
+                activeCardIndex = null;
+            } else {
+                orbit.classList.add('active');
+                btn.classList.add('active');
+                activeCardIndex = index;
+            }
+        }
+
+        function pauseOrbit(index) {
+            const inner = document.getElementById(`orbit-inner-${index}`);
+            inner.classList.add('paused');
+        }
+
+        function resumeOrbit(index) {
+            const inner = document.getElementById(`orbit-inner-${index}`);
+            inner.classList.remove('paused');
+        }
+
+        function openModal(title, desc, imagePath, link) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDescription').textContent = desc;
+            document.getElementById('modalImage').src = imagePath;
+            document.getElementById('modalLink').href = link;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function closeModalOnBackground(event) {
+            if (event.target.id === 'modal') {
+                closeModal();
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const icon = document.getElementById('toggleIcon');
+            icon.textContent = document.body.classList.contains('dark') ? '🌙' : '☀️';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        generateCards();
+    </script>
+
+</body>
+</html>
